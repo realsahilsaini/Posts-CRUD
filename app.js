@@ -107,9 +107,48 @@ app.post('/login', async (req, res) => {
     return res.redirect('/login');
   }
 
+   // Create JWT token
+   let token = jwt.sign({ email: email, userid: user._id }, process.env.JWT_SECRET);
+
+   // Set token in cookies
+   res.cookie('token', token);
+
   return res.send('Logged in successfully');
 
 });
+
+
+app.get('/logout', (req, res) => {
+
+  console.log(req);
+
+    res.clearCookie('token');
+    req.flash('success', 'Logged out successfully');
+    return res.redirect('/login');
+
+});
+
+
+app.get('/dashboard', isLoggedIn, async (req, res) => {
+  console.log(req.user);
+  res.send('Dashboard');
+});
+
+function isLoggedIn(req, res, next) {
+  if (!req.cookies.token) {
+    req.flash('error', 'You need to be logged in to access this route.');
+    return res.redirect('/login');
+  }
+
+    // Verify the token
+    const decoded = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+
+    // Set the user in the request object
+    req.user = decoded;
+
+    next();
+
+}
 
 
 app.listen(3000, () => {
