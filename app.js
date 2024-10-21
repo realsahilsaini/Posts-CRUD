@@ -129,11 +129,34 @@ app.get('/logout', (req, res) => {
 
 app.get('/profile', isLoggedIn, async (req, res) => {
 
-  let user = await userModel.findOne({email: req.user.email});
-
+  let user = await userModel.findOne({email: req.user.email}).populate('posts');
 
   res.render('Profile', {user: user});
 });
+
+app.post('/post', isLoggedIn, async (req, res)=>{
+
+
+  let user = await userModel.findOne({email: req.user.email});
+
+  let post = await new postModel({
+    user: user._id,
+    content: req.body.content
+  });
+
+  //Here we need to save as we are creating a new post
+  await post.save();
+
+  user.posts.push(post._id);
+
+  //Here we need to save as we are updating the user's posts array
+  await user.save();
+
+  req.flash('success', 'Post created successfully');
+
+  res.redirect('/profile');
+
+})
 
 function isLoggedIn(req, res, next) {
   if (!req.cookies.token) {
