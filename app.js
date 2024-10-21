@@ -134,6 +134,53 @@ app.get('/profile', isLoggedIn, async (req, res) => {
   res.render('Profile', {user: user});
 });
 
+app.get('/like/:postid', isLoggedIn, async (req, res) => {
+
+  let post = await postModel.findOne({_id: req.params.postid}).populate('user');
+
+  //Check if the user has already liked the post
+  if(post.likes.indexOf(req.user.userid) === -1) {
+    //We are getting user from the request object from the isLoggedIn middleware
+    post.likes.push(req.user.userid);
+  }else{
+    //This will remove the like from the post if the user has already liked it by filtering out the user id if it is already present in the likes array of the post model object.
+    //This is done to prevent the user from liking the post multiple times. 
+    // post.likes = post.likes.filter((like) => like != req.user.userid);
+
+    //We can also use splice method to remove the like from the post model object
+    post.likes.splice(post.likes.indexOf(req.user.userid), 1);
+  }
+
+
+  await post.save();
+
+  //Redirecting to the profile page rather than re-renderng as we are already sending the user object through the profile page in the get request of the profile route. 
+  res.redirect('/profile');
+});
+
+
+app.get('/edit/:postid', isLoggedIn, async (req, res) => {
+  let post = await postModel.findOne({_id: req.params.postid});
+
+  res.render('edit', {post: post});
+});
+
+app.post('/update/:postid', isLoggedIn, async (req, res) => {
+
+  let newContent = req.body.content;
+
+  await postModel.findOneAndUpdate(
+    {
+      _id: req.params.postid
+    },{
+      content: newContent
+    });
+
+  req.flash('success', 'Post updated successfully');  
+  res.redirect('/profile');
+
+});
+
 app.post('/post', isLoggedIn, async (req, res)=>{
 
 

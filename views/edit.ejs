@@ -63,81 +63,23 @@
 
           <div class="w-full min-h-screen bg-zinc-900 text-white p-10">
 
-            <div class="flex items-center">
-
-              <h3 class="text-5xl text-zinc-200 font-bold mb-5 flex-1">
-                Hello, <%= user.name %>
-                  <span class="text-6xl">👋</span>
-              </h3>
-
-              <a class="bg-red-500 rounded-md px-4 py-2 mr-16 text-2xl font-medium" href="/logout">Logout</a>
-
-            </div>
-
-            <div class="h-1 w-[99%] bg-zinc-700 mb-12"></div>
+            
 
 
-            <h5 class="text-3xl text-zinc-200 mb-5">Create a new a post.</h5>
+            <h5 class="text-3xl text-zinc-200 mb-5">Edit Your Post</h5>
 
-            <form action="/post" method="POST">
+            <form action="/update/<%= post._id %>" 
+            method="POST">
               <textarea placeholder="What's on your mind?"
                 class="w-1/3 p-3 resize-none bg-transparent border-2 border-zinc-800 rounded-md outline-none block mb-4"
-                name="content"></textarea>
+                name="content"><%= post.content %></textarea>
 
-              <input class="px-3 py-2 w-24 text-xl font-medium bg-blue-500 rounded-md block items-center" type="submit"
-                value="Post ➤">
+              <input class="px-3 py-2  text-xl font-medium bg-blue-500 rounded-md block items-center" type="submit"
+                value="Make Changes ➤">
             </form>
 
 
-            <div class="posts mt-12">
-              <h3 class="text-2xl text-zinc-400 mb-5">Your posts</h3>
-
-              <div class="post-container flex flex-col gap-6">
-
-                <% user.posts.reverse().forEach(function(post){ %>
-
-
-                  <div class="post w-1/2 p-5 bg-zinc-800 border-2 border-zinc-700 rounded-md">
-
-                    <h4 class="text-xl text-blue-400 mb-4">@
-                      <%= user.username %>
-                    </h4>
-
-                    <p class=" text-md">
-                      <%= post.content %>
-                    </p>
-
-                    <small class="mt-8 inline-block">
-                      <%= post.likes.length  %>
-                      likes
-                    </small>
-
-                    <div class="btns flex mt-2 gap-6">
-                      <a class="text-blue-500" 
-                      href="/like/<%= post._id %>">
-                      
-                      <!-- 
-                      Here we are checking if the user has already liked the post or not by checking if the user id is present in the likes array of the post. If the user has liked the post(i.e. user id is present in the  post.likes array), we show the "Unlike" text, otherwise (i.e. user._id is not present in the post.likes array) we show the "Like" text. 
-                      -->
-                      <%= post.likes.includes(user._id)? "Unlike" : "Like" %>
-
-                      </a>
-
-                      <a class="text-zinc-400" 
-                      href="/edit/<%= post._id %>">Edit</a>
-                    </div>
-
-                  </div>
-
-
-                <% }); %>
-
-
-
-              </div>
-
-
-            </div>
+           
 
           </div>
 
