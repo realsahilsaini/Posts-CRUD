@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
 require('dotenv').config();
+const upload = require('./utils/multerconfig');
 
 
 const app = express();
@@ -15,6 +16,7 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname + '/public'));
 app.use(cookieParser());
 
 
@@ -134,6 +136,19 @@ app.get('/profile', isLoggedIn, async (req, res) => {
   res.render('Profile', {user: user});
 });
 
+app.get('/profile/upload', isLoggedIn, (req, res) => {
+  res.render('profileupload');
+});
+
+app.post('/upload', isLoggedIn, upload.single('profile'), async (req, res) => {
+  
+  await userModel.findOneAndUpdate({email: req.user.email}, {
+    profilePic: req.file.filename
+  })
+
+  res.redirect('/profile');
+});
+
 app.get('/like/:postid', isLoggedIn, async (req, res) => {
 
   let post = await postModel.findOne({_id: req.params.postid}).populate('user');
@@ -204,6 +219,8 @@ app.post('/post', isLoggedIn, async (req, res)=>{
   res.redirect('/profile');
 
 })
+
+
 
 function isLoggedIn(req, res, next) {
   if (!req.cookies.token) {

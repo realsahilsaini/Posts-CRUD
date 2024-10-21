@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile</title>
+  <style>
+    .alert {
+      padding: 15px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      margin-bottom: 30px;
+      width: 100%;
+      position: absolute;
+    }
+
+    .alert-success {
+      color: #155724;
+      background-color: #d4edda;
+      border-color: #c3e6cb;
+    }
+
+    .alert-danger {
+      color: #721c24;
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+    }
+
+    .alert .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <% if (flashMessages.error) { %>
+    <div class="alert alert-danger alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <%= flashMessages.error %>
+    </div>
+    <% } %>
+
+      <% if (flashMessages.success) { %>
+        <div class="alert alert-success alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <%= flashMessages.success %>
+        </div>
+        <% } %>
+
+
+        <div class="w-full min-h-screen bg-zinc-900 text-white p-10 flex flex-col items-center">
+
+          <h3 class="text-3xl mb-5">Upload Profile</h3>
+        
+          <div class="h-1 w-full bg-zinc-700 mt-5 mb-12"></div>
+        
+          <div class="flex flex-col items-center bg-zinc-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+            
+            <form autocomplete="off" action="/upload" method="post" enctype="multipart/form-data" class="w-full">
+              <div class="mb-4">
+                <label for="profile" class="block text-lg font-medium text-gray-300 mb-2">Choose Profile Picture</label>
+                <input type="file" name="profile" id="profile" class="block w-full text-sm text-gray-300 border border-gray-600 rounded-lg cursor-pointer bg-gray-700 focus:outline-none focus:border-blue-500">
+              </div>
+              <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg">Upload</button>
+            </form>
+        
+          </div>
+        
+        </div>
+
+
+
+
+          <script src="https://cdn.tailwindcss.com"></script>
+
+
+          <script>
+            // Auto-hide alert after 5 seconds (5000 milliseconds)
+            setTimeout(function () {
+              var alerts = document.querySelectorAll('.alert');
+              alerts.forEach(function (alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = '0';
+                setTimeout(function () {
+                  alert.remove();
+                }, 500);  // Wait for fade-out animation
+              });
+            }, 5000);  // 5 seconds before fading out
+
+            document.querySelectorAll('.alert .close').forEach(function (button) {
+              button.addEventListener('click', function () {
+                button.parentElement.style.display = 'none';  // Hide the alert when clicked
+              });
+            });
+          </script>
+
+</body>
+
+</html>
