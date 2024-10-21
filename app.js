@@ -113,14 +113,12 @@ app.post('/login', async (req, res) => {
    // Set token in cookies
    res.cookie('token', token);
 
-  return res.send('Logged in successfully');
+  return res.redirect('/profile');
 
 });
 
 
 app.get('/logout', (req, res) => {
-
-  console.log(req);
 
     res.clearCookie('token');
     req.flash('success', 'Logged out successfully');
@@ -129,9 +127,12 @@ app.get('/logout', (req, res) => {
 });
 
 
-app.get('/dashboard', isLoggedIn, async (req, res) => {
-  console.log(req.user);
-  res.send('Dashboard');
+app.get('/profile', isLoggedIn, async (req, res) => {
+
+  let user = await userModel.findOne({email: req.user.email});
+
+
+  res.render('Profile', {user: user});
 });
 
 function isLoggedIn(req, res, next) {
